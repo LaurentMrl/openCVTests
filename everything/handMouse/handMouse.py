@@ -29,15 +29,15 @@ class MyMouse():
             print("left release")
             self.left_click=False
             mouse.release(Button.left)
-        if new_right_click==True and self.right_click!=True:
-            self.new_right_click=time.time()
-            print("Right click")
-            self.left_click=True
-            mouse.press(Button.right)
-        elif new_right_click==False and self.right_click!=False:
-            print("Right release")
-            self.right_click=False
-            mouse.release(Button.right)
+        # if new_right_click==True and self.right_click!=True:
+        #     self.new_right_click=time.time()
+        #     print("Right click")
+        #     self.right_click=True
+        #     mouse.press(Button.right)
+        # elif new_right_click==False and self.right_click!=False:
+        #     print("Right release")
+        #     self.right_click=False
+        #     mouse.release(Button.right)
 
 
 
@@ -82,11 +82,11 @@ while True:
             forefinger_tip_pos=[hands[0]["lmList"][8][0],hands[0]["lmList"][8][1]]
             middle_finger_base_pos=[hands[0]["lmList"][9][0],hands[0]["lmList"][9][1]]
             middle_finger_tip_pos=[hands[0]["lmList"][12][0],hands[0]["lmList"][12][1]]
-            # cv2.circle(img, thumb_tip_pos, 6, (0, 0, 255), -1)
-            # cv2.circle(img, forefinger_base_pos, 6, (0, 0, 255), -1)
+            cv2.circle(img, thumb_tip_pos, 6, (0, 0, 255), -1)
+            cv2.circle(img, forefinger_base_pos, 6, (0, 0, 255), -1)
             cv2.circle(img, forefinger_tip_pos, 6, (0, 0, 255), -1)
-            # cv2.circle(img, middle_finger_base_pos, 6, (0, 0, 255), -1)
-            # cv2.circle(img, middle_finger_tip_pos, 6, (0, 0, 255), -1)
+            cv2.circle(img, middle_finger_base_pos, 6, (0, 0, 255), -1)
+            cv2.circle(img, middle_finger_tip_pos, 6, (0, 0, 255), -1)
             if time.time()-ma_main.my_mouse.last_left_click>=0.5:
                 ma_main.update_hand_pos(forefinger_tip_pos)
             checkIfClicked(thumb_tip_pos, forefinger_base_pos, middle_finger_base_pos, middle_finger_tip_pos)
