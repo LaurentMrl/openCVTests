@@ -9,56 +9,44 @@ import time
 import pyautogui as PAG
 from pynput.mouse import Button, Controller
 
-class MyMouse():
-    def __init__(self):
-        print("init MyMouse")
-        self.left_click=None
-        self.right_click=None
-        self.last_left_click=time.time()
-    
-    def update_mouse_pos(self, new_mouse_position):
-        PAG.moveTo(new_mouse_position, _pause=False)
-
-    def update_mouse_click(self, new_left_click, new_right_click):
-        if new_left_click==True and self.left_click!=True:
-            self.last_left_click=time.time()
-            print("Left click")
-            self.left_click=True
-            mouse.press(Button.left)
-        elif new_left_click==False and self.left_click!=False:
-            print("left release")
-            self.left_click=False
-            mouse.release(Button.left)
-        if new_right_click==True and self.right_click!=True:
-            self.new_right_click=time.time()
-            print("Right click")
-            self.right_click=True
-            mouse.press(Button.right)
-        elif new_right_click==False and self.right_click!=False:
-            print("Right release")
-            self.right_click=False
-            mouse.release(Button.right)
-
-
-
 class MyHand():
     def __init__(self):
         print("Init MyHand")
-        self.my_mouse=MyMouse()
-    
-    def update_hand_pos(self, new_forefinger_position):
-        self.my_mouse.update_mouse_pos(new_forefinger_position)
+        self.left_click=None
+        self.right_click=None
+        self.new_left_click=None
+        self.new_right_click=None
+        self.last_left_click=time.time()
+        self.new_right_click=time.time()
 
-def checkIfClicked(thumb_tip_pos, forefinger_base_pos, middle_finger_base_pos, middle_finger_tip_pos):
-    if thumb_tip_pos[0]-forefinger_base_pos[0]>=-55:
-        left_click=True
-    else:
-        left_click=False
-    if middle_finger_tip_pos[1]-middle_finger_base_pos[1]>=-100:
-        right_click=True
-    else:
-        right_click=False
-    ma_main.my_mouse.update_mouse_click(left_click, right_click)
+    def update_mouse_pos(self, new_mouse_position):
+        PAG.moveTo(new_mouse_position, _pause=False)
+        
+    def checkIfClicked(self, thumb_tip_pos, forefinger_base_pos, middle_finger_base_pos, middle_finger_tip_pos):
+        if thumb_tip_pos[0]-forefinger_base_pos[0]>=-55:
+            if self.new_left_click==True and self.left_click!=True:
+                self.last_left_click=time.time()
+                print("Left click")
+                self.left_click=True
+                mouse.press(Button.left)        
+        else:
+            if self.new_left_click==False and self.left_click!=False:
+                self.left_click=False
+                print("left release")
+                mouse.release(Button.left)
+        if middle_finger_tip_pos[1]-middle_finger_base_pos[1]>=-100:
+            if self.new_right_click==True and self.right_click!=True:
+                self.new_right_click=time.time()
+                print("Right click")
+                self.right_click=True
+                mouse.press(Button.right)
+                self.right_click=True
+        else:
+            self.right_click=False
+            if self.new_right_click==False and self.right_click!=False:
+                print("Right release")
+                self.right_click=False
+                mouse.release(Button.right)
 
 screen_width, screen_height= PAG.size()
 
@@ -86,9 +74,8 @@ while True:
             cv2.circle(img, forefinger_tip_pos, 6, (0, 0, 255), -1)
             cv2.circle(img, middle_finger_base_pos, 6, (0, 0, 255), -1)
             cv2.circle(img, middle_finger_tip_pos, 6, (0, 0, 255), -1)
-            if time.time()-ma_main.my_mouse.last_left_click>=0.5:
-                ma_main.update_hand_pos(forefinger_tip_pos)
-            checkIfClicked(thumb_tip_pos, forefinger_base_pos, middle_finger_base_pos, middle_finger_tip_pos)
+            if time.time()-ma_main.last_left_click>=0.5:
+                ma_main.checkIfClicked(thumb_tip_pos, forefinger_base_pos, middle_finger_base_pos, middle_finger_tip_pos)
         except Exception as e:
             print(f"There was an error ! : {e}")
 
